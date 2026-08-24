@@ -278,31 +278,31 @@ many more findings there are per PR rather than how the mix shifted.
 periods reviewed different volumes: 529 changes in 2025 against 259 for the agent
 in 2026.
 
-| Issue type                    | Human 2025 | Agent 2026 |
-| ----------------------------- | ---------: | ---------: |
-| Schema and property design    |         78 |        132 |
-| Resource modeling             |         29 |         96 |
-| Versioning and compatibility  |         22 |         89 |
-| Operations and HTTP semantics |         20 |         80 |
-| Long-running operations       |         11 |         54 |
-| Security and secrets          |          8 |         23 |
-| Review readiness and CI       |         30 |         38 |
-| Documentation and examples    |         39 |         21 |
-| Naming, enums, identifiers    |         35 |         19 |
+| Issue type                    | Human 2025 | Agent 2026 | Change |
+| ----------------------------- | ---------: | ---------: | -----: |
+| Schema and property design    |         78 |        132 |   1.7x |
+| Resource modeling             |         29 |         96 |   3.2x |
+| Versioning and compatibility  |         22 |         89 |   4.0x |
+| Operations and HTTP semantics |         20 |         80 |   4.0x |
+| Long-running operations       |         11 |         54 |   5.0x |
+| Security and secrets          |          8 |         23 |   2.7x |
+| Review readiness and CI       |         30 |         38 |   1.3x |
+| Documentation and examples    |         39 |         21 |   0.5x |
+| Naming, enums, identifiers    |         35 |         19 |   0.5x |
 
 **How to read it.** The top six rows are design and correctness, and every one of
 them goes up. The bottom three are process and polish, and two of the three go
 down. The agent moved review effort toward the issues that are expensive to fix
 after a version ships.
 
-**Why there is no multiplier column.** Whole numbers and printed multipliers
-contradict each other once rounded. Security is the clearest case: 8 and 23 look
-like 2.9x, but the true figure from the underlying counts is 2.7x. Resource
-modeling and long-running operations have the same problem. Rather than print
-arithmetic the audience cannot reproduce, the multipliers live in the section 4
-headings below, where each is stated against its example. If asked on the spot,
-the safe answers are roughly 4x for versioning and HTTP semantics, 5x for
-long-running operations, and 3x for resource modeling.
+**The change column will not always match the two columns beside it.** Every
+multiplier is computed from the underlying counts, not by dividing the two
+rounded columns, so on three rows the displayed arithmetic looks off by a
+tenth. Security is the clearest: 8 and 23 divide to 2.9x, but the true figure
+is 2.7x. Resource modeling and long-running operations differ the same way.
+This is a rounding artifact in the rate columns, not an error in the
+multiplier. If anyone does the division on screen and challenges it, that is the
+answer, and the exact rates are 8.3 and 22.8.
 
 **One caveat worth knowing before this goes on a slide.** 23.3 percent of human
 feedback lands in an "other" bucket that resists categorization, against almost
@@ -368,7 +368,7 @@ keeping checked-in examples aligned with the contract.
 > tests, so a stale example teaches callers the wrong contract.
 > [PR #43902](https://github.com/Azure/azure-rest-api-specs/pull/43902#discussion_r3399892201)
 
-### Long-running operations, 4.9x
+### Long-running operations, 5.0x
 
 Async polling correctness: `Azure-AsyncOperation` and `Location` headers,
 `final-state-via`, provisioning state, and matching 201 and 202 shapes. Largest
@@ -569,7 +569,7 @@ automated workflow already runs on PRs carrying `WaitForARMFeedback`; the work i
 making that path the default rather than the exception.
 
 **Long-running operations.** Partners have been asking for deeper support here,
-and it is also the largest gap in the data at 4.9x. Picking it up next lines the
+and it is also the largest gap in the data at 5.0x. Picking it up next lines the
 roadmap up with both partner demand and the measured evidence, which is a useful
 point to make if someone asks how priorities were chosen.
 
@@ -610,7 +610,7 @@ are de-duplicated, which removed 195 repeats from re-reviews of the same PR.
 
 **"Is the agent just noisier?"**
 Volume alone would suggest that, which is why row 2 is rate-based. The mix moved
-toward contract risk: versioning 4.0x, long-running operations 4.9x, security
+toward contract risk: versioning 4.0x, long-running operations 5.0x, security
 2.7x, while documentation and naming went down. About one quarter of findings
 are blocking, and authors resolved 67 percent of the threads it raised.
 
