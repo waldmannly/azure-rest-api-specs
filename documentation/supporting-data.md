@@ -488,6 +488,20 @@ received at least one actionable finding.** The remaining 69 got a review that
 raised nothing to act on, which is the correct outcome for a clean change. Use
 412 for reach and 343 if someone asks how often it actually found something.
 
+**412 covers the whole life of the agent, not the three-month comparison
+window.** This matters because the deck uses two windows and the numbers will be
+compared. For May through July alone the agent commented on **273** pull
+requests, 249 of which received a finding. Slide 4 separately cites 259 reviewed
+changes for that window; that figure comes from the comparison dataset, which
+counts only changes in scope for the human-against-agent comparison and applies
+its own de-duplication. The three numbers describe slightly different things and
+none contradicts the others.
+
+| Window                            | PRs commented on | PRs with a finding |
+| --------------------------------- | ---------------: | -----------------: |
+| Since introduction, 22 Apr-24 Aug |              412 |                343 |
+| Comparison window, May-Jul        |              273 |                249 |
+
 ### Severity
 
 | Severity   | Findings |
