@@ -592,6 +592,72 @@ included.
 
 ---
 
+## 5a. What a review costs
+
+Every workflow run publishes a `usage` artifact carrying token counts and AI
+credits. These figures come from 126 runs that produced usage data, covering
+7 to 24 August 2026 across both repositories. Every run used `claude-sonnet-5`.
+
+### Per review
+
+| Measure                 |    Median |      Mean |    Highest |
+| ----------------------- | --------: | --------: | ---------: |
+| Tokens                  | 3,158,498 | 3,419,237 | 10,879,609 |
+| AI credits              |     121.4 |     128.1 |      364.0 |
+| Model requests          |        40 |      45.6 |        146 |
+| Time spent in the model |     5.6 m |     6.1 m |     16.6 m |
+
+Across all 126 runs: **431 million tokens, 16,142 AI credits, 5,744 model
+requests.**
+
+### Two things worth saying out loud
+
+**95 percent of those tokens are cache reads**, 408 million of 431 million. The
+agent re-reads the same rule set on every run and prompt caching absorbs almost
+all of it. Quoting the raw token count as if it were fresh input badly overstates
+what the review costs, which is why AI credits are the honest unit here. Credits
+are also what the daily guardrail in the workflow meters.
+
+**Cost tracks pull request size, not a fixed price per review.** The range runs
+from roughly 21 credits to 364, a seventeen-fold spread, and the distribution is
+smooth rather than clustered. There is no such thing as a typical review cost;
+there is a cost curve against how much changed.
+
+### Cost per finding
+
+Joining runs to findings for the 61 pull requests where both are available:
+
+| Measure                                |  Value |
+| -------------------------------------- | -----: |
+| Pull requests that produced findings   |     36 |
+| Findings from them                     |    197 |
+| Credits spent on them                  |  9,046 |
+| **Credits per finding**                | **46** |
+| Pull requests reviewed with no finding |     25 |
+| Credits spent on those                 |  3,245 |
+
+The 25 clean reviews are not waste. A review that finds nothing is the correct
+outcome on a clean change, and the agent cannot know which case it is without
+looking. Roughly a quarter of the spend goes to confirming that a change is fine.
+
+### Before quoting any of this
+
+**This is 17 days, not the full life of the agent.** The automated workflow
+merged on 7 August and the first run followed three minutes later, so 7 to 24
+August is everything there is. It does not cover the interactive reviews that
+produced the April-onward figures in section 5, which ran on developer machines
+and left no usage artifact.
+
+**AI credits are not dollars.** The conversion depends on the billing agreement
+and is not in this data. Quote credits, or say "we can convert this if you want a
+dollar figure" rather than guessing a rate on stage.
+
+**126 runs, not 126 pull requests.** Sixteen pull requests were reviewed more
+than once, since a fresh push re-triggers the workflow. Per-review figures are
+per run; the per-finding figures are aggregated per pull request first.
+
+---
+
 ## 6. Slide 6: next steps detail
 
 Backing for the roadmap slide, in case anyone asks for specifics.
