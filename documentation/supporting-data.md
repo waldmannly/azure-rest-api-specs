@@ -295,14 +295,35 @@ them goes up. The bottom three are process and polish, and two of the three go
 down. The agent moved review effort toward the issues that are expensive to fix
 after a version ships.
 
-**The change column will not always match the two columns beside it.** Every
-multiplier is computed from the underlying counts, not by dividing the two
-rounded columns, so on three rows the displayed arithmetic looks off by a
-tenth. Security is the clearest: 8 and 23 divide to 2.9x, but the true figure
-is 2.7x. Resource modeling and long-running operations differ the same way.
-This is a rounding artifact in the rate columns, not an error in the
-multiplier. If anyone does the division on screen and challenges it, that is the
-answer, and the exact rates are 8.3 and 22.8.
+**On a slide, round the change column to whole numbers.** The multipliers above
+come from the underlying counts, not from dividing the two rounded rate columns,
+so on three rows the on-screen arithmetic looks off by a tenth: resource
+modeling divides to 3.3x, long-running operations to 4.9x, and security to 2.9x.
+Rounding to whole numbers removes the conflict, because both the precise figure
+and the on-screen division round to the same value on every row:
+
+| Category                      | Human 2025 | Agent 2026 | Change |
+| ----------------------------- | ---------: | ---------: | -----: |
+| Schema and property design    |         78 |        132 |     2x |
+| Resource modeling             |         29 |         96 |     3x |
+| Versioning and compatibility  |         22 |         89 |     4x |
+| Operations and HTTP semantics |         20 |         80 |     4x |
+| Long-running operations       |         11 |         54 |     5x |
+| Security and secrets          |          8 |         23 |     3x |
+
+This is the version to put on a slide. It is easier to say aloud, and anyone who
+divides the columns in their head arrives at the number on screen. Schema is the
+one row where rounding is doing real work, taking 1.7x up to 2x; use 1.7x there
+if you would rather not round up.
+
+Keep the one-decimal table above as the reference. It matches the multipliers in
+the section 4 headings, so the two never disagree.
+
+**If the slide shows only these six rows, say the seventh thing out loud.** All
+six go up, which on its own reads as "the agent finds more of everything." The
+point is the shift: documentation and naming feedback roughly halved over the
+same period. Without that, the audience hears volume rather than redirected
+attention.
 
 **One caveat worth knowing before this goes on a slide.** 23.3 percent of human
 feedback lands in an "other" bucket that resists categorization, against almost
@@ -452,6 +473,7 @@ alone rather than comparing against human review.
 | Comments posted by the agent     | 2,896 |
 | Distinct findings                | 2,024 |
 | Pull requests reviewed           |   412 |
+| ... with at least one finding    |   343 |
 | ... in `azure-rest-api-specs`    |   216 |
 | ... in `azure-rest-api-specs-pr` |   196 |
 | Resource providers reached       |   119 |
@@ -460,6 +482,11 @@ alone rather than comparing against human review.
 Findings are de-duplicated by pull request, rule, file, and finding heading, so
 re-reviews of the same pull request are not double counted. Review summaries and
 reconciliation replies are excluded; only actionable findings are counted.
+
+**412 is the number of pull requests the agent commented on; 343 of those
+received at least one actionable finding.** The remaining 69 got a review that
+raised nothing to act on, which is the correct outcome for a clean change. Use
+412 for reach and 343 if someone asks how often it actually found something.
 
 ### Severity
 
