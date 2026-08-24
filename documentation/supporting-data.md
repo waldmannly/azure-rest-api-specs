@@ -258,11 +258,15 @@ against 56 percent. The same shift expressed as a rate per 100 reviewed changes:
 
 | Category                      | 2025 human | 2026 agent |
 | ----------------------------- | ---------: | ---------: |
-| Resource modeling             |       29.5 |       95.8 |
-| Versioning and compatibility  |       22.3 |       89.2 |
-| Operations and HTTP semantics |       20.0 |       80.3 |
-| Long-running operations       |       11.0 |       54.4 |
-| **Combined**                  |   **82.8** |  **319.7** |
+| Resource modeling             |         29 |         96 |
+| Versioning and compatibility  |         22 |         89 |
+| Operations and HTTP semantics |         20 |         80 |
+| Long-running operations       |         11 |         54 |
+| **Combined**                  |     **82** |    **319** |
+
+The combined row is the sum of the rounded rows above it, so the column adds up
+on screen. The unrounded totals are 82.8 and 319.7, a difference of well under
+one percent that changes nothing.
 
 Use the share figure on the slide because it is independent of volume and
 therefore harder to argue with. Use the rate if someone specifically asks how
@@ -270,21 +274,43 @@ many more findings there are per PR rather than how the mix shifted.
 
 ### Full issue mix, if anyone wants it
 
-Rate per 100 reviewed changes. This was an earlier version of row 2 and was cut
-because five categories with five multipliers is difficult to deliver verbally.
-Keep it here for questions.
+**Findings per 100 API changes reviewed.** Rates, not raw counts, because the two
+periods reviewed different volumes: 529 changes in 2025 against 259 for the agent
+in 2026.
 
-| Issue type                    | 2025 human | 2026 agent | Multiplier |
-| ----------------------------- | ---------: | ---------: | ---------: |
-| Schema and property design    |       77.7 |      131.7 |       1.7x |
-| Resource modeling             |       29.5 |       95.8 |       3.2x |
-| Versioning and compatibility  |       22.3 |       89.2 |       4.0x |
-| Operations and HTTP semantics |       20.0 |       80.3 |       4.0x |
-| Long-running operations       |       11.0 |       54.4 |       4.9x |
-| Security and secrets          |        8.3 |       22.8 |       2.7x |
-| Review readiness and CI       |       29.7 |       37.8 |       1.3x |
-| Documentation and examples    |       39.3 |       20.8 |       0.5x |
-| Naming, enums, identifiers    |       34.6 |       18.5 |       0.5x |
+| Issue type                    | Human 2025 | Agent 2026 |
+| ----------------------------- | ---------: | ---------: |
+| Schema and property design    |         78 |        132 |
+| Resource modeling             |         29 |         96 |
+| Versioning and compatibility  |         22 |         89 |
+| Operations and HTTP semantics |         20 |         80 |
+| Long-running operations       |         11 |         54 |
+| Security and secrets          |          8 |         23 |
+| Review readiness and CI       |         30 |         38 |
+| Documentation and examples    |         39 |         21 |
+| Naming, enums, identifiers    |         35 |         19 |
+
+**How to read it.** The top six rows are design and correctness, and every one of
+them goes up. The bottom three are process and polish, and two of the three go
+down. The agent moved review effort toward the issues that are expensive to fix
+after a version ships.
+
+**Why there is no multiplier column.** Whole numbers and printed multipliers
+contradict each other once rounded. Security is the clearest case: 8 and 23 look
+like 2.9x, but the true figure from the underlying counts is 2.7x. Resource
+modeling and long-running operations have the same problem. Rather than print
+arithmetic the audience cannot reproduce, the multipliers live in the section 4
+headings below, where each is stated against its example. If asked on the spot,
+the safe answers are roughly 4x for versioning and HTTP semantics, 5x for
+long-running operations, and 3x for resource modeling.
+
+**One caveat worth knowing before this goes on a slide.** 23.3 percent of human
+feedback lands in an "other" bucket that resists categorization, against almost
+none of the agent's, because agent findings carry an explicit rule ID. Those
+unclassified human comments are excluded from the table rather than hidden. If
+they were distributed into the named categories, the human column would rise and
+the gaps would narrow. Treat the differences as directional and as an upper
+bound, not as precise measurements.
 
 Severity split: **443 blocking, 668 warning, 554 suggestion**. Blocking is
 roughly one quarter. **1,537 findings were newly introduced** by the PR and
@@ -366,7 +392,7 @@ suppressed instead of fixed. Small in volume, large in consequence.
 ### Review readiness and CI, 1.3x
 
 Blocked or incomplete PRs: failing required checks, broken suppressions, and
-files that are not in a reviewable state. In 2025 this consumed 29.7 comments
+files that are not in a reviewable state. In 2025 this consumed 30 comments
 per 100 changes of reviewer time spent on process rather than API design.
 
 > **Example.** The generated Swagger contained unresolved Git merge conflict
@@ -412,7 +438,120 @@ attention moving from polish to correctness.
 
 ---
 
-## 5. Slide 5: next steps detail
+## 5. Slide 5: impact since April
+
+Numbers cover **22 April to 24 August 2026**. The first agent comment anywhere is
+22 April, so this is the full life of the agent to date. It is a different window
+from the May to July comparison used on the other slides, and it counts the agent
+alone rather than comparing against human review.
+
+### Reach
+
+| Measure                          | Value |
+| -------------------------------- | ----: |
+| Comments posted by the agent     | 2,896 |
+| Distinct findings                | 2,024 |
+| Pull requests reviewed           |   412 |
+| ... in `azure-rest-api-specs`    |   216 |
+| ... in `azure-rest-api-specs-pr` |   196 |
+| Resource providers reached       |   119 |
+| Service areas reached            |   140 |
+
+Findings are de-duplicated by pull request, rule, file, and finding heading, so
+re-reviews of the same pull request are not double counted. Review summaries and
+reconciliation replies are excluded; only actionable findings are counted.
+
+### Severity
+
+| Severity   | Findings |
+| ---------- | -------: |
+| Blocking   |      483 |
+| Warning    |      875 |
+| Suggestion |      724 |
+
+### Security
+
+**68 security findings, 32 blocking, across 46 pull requests and 21 providers.**
+
+The strongest example is
+[PR #44639](https://github.com/Azure/azure-rest-api-specs/pull/44639), titled
+"RecoveryServicesBackup: add 2026-08-01 stable version with
+fetchInstantItemRecoveryOperationResult action (MSRC-114273)". The pull request
+is itself a remediation for an active MSRC case. The agent posted two blocking
+findings on it, including `SEC-SECRET-DETECT`, observing that the new operation
+returns mount scripts containing iSCSI CHAP connection credentials, which is the
+same class of data the MSRC case concerns. In other words it caught the fix
+re-opening the exposure on a different path.
+
+**On the MSRC question specifically.** Seven comments reference MSRC, across two
+pull requests. None of these findings became MSRC cases; they are potential
+exposures caught in review, before the API version shipped. That is the more
+useful framing than an MSRC count, and it is the honest one.
+
+### Deep design findings
+
+**665 findings, 222 blocking, across 229 pull requests.**
+
+| Category                      | Findings |
+| ----------------------------- | -------: |
+| Resource modeling             |      193 |
+| Long-running operations       |      162 |
+| Operations and HTTP semantics |      156 |
+| Versioning and compatibility  |      154 |
+
+These are the categories a linter cannot reach and that are most expensive to
+correct once a version is public.
+
+### Why this does not reconcile with slide 4, and what to say
+
+Slide 4 reports **1,470** agent findings for May to July. Slide 5 counts
+**1,196** for the same three months inside its own window. That looks like a
+contradiction and will be spotted if anyone cross-references the two slides.
+
+The collection is not the problem. Both passes captured essentially the same
+comments for May to July: 1,805 agent-marked comments in this pass against 1,815
+records in the earlier one, a difference of ten explained by three findings posted
+as pull request review bodies and by boundary timing.
+
+The difference is the definition of a finding:
+
+| Treatment                                    | Slide 4 | Slide 5  |
+| -------------------------------------------- | :-----: | :------: |
+| Comments with an explicit severity           | counted | counted  |
+| Comments with no parsed severity (385)       | counted | excluded |
+| Reconciliation replies inside a thread (110) | counted | excluded |
+| Review summaries                             | counted | excluded |
+
+**Slide 5 uses the stricter definition.** It counts only comments the agent
+itself marked blocking, warning, or suggestion, and drops summaries and replies.
+That is the right basis for "how many issues did it find", which is what slide 5
+claims.
+
+If asked, the honest answer is that slide 4 compares two review populations and
+slide 5 counts the agent's own output under a tighter definition, so the two
+figures are not directly comparable. Do not present them as a trend.
+
+### How findings were categorized, and why it matters
+
+Categories come first from the **rule identifier** the agent itself cites, which
+covers 66 percent of findings. For the remainder the **finding title** is used,
+taking coverage to 86 percent. The remaining 14 percent stay uncategorized rather
+than being guessed at.
+
+Whole-body keyword matching was tried first and rejected. It inflated security
+from 68 to 256, because a finding about property mutability on a field named
+`secretsProvisioning` matched on the word "secret" even though the finding has
+nothing to do with security. The same failure mode produced the Codeflow URL bug
+found earlier in this work. Treat any body-wide keyword count with suspicion.
+
+**The security figure is a floor, not a ceiling.** It counts findings whose rule
+or title is explicitly about secrets, credentials, or write-only exposure.
+Genuine security findings sitting in the uncategorized 14 percent are not
+included.
+
+---
+
+## 6. Slide 6: next steps detail
 
 Backing for the roadmap slide, in case anyone asks for specifics.
 
@@ -447,7 +586,7 @@ comment access. Raised as an idea; mention it only if asked about extensibility.
 
 ---
 
-## 6. Anticipated questions
+## 7. Anticipated questions
 
 **"Does the agent move the PR through the review queue by itself?"**
 In practice, no. It posts findings and leaves the decision to a reviewer, and it
@@ -539,7 +678,7 @@ nothing posts without reviewer approval.
 
 ---
 
-## 7. Caveats
+## 8. Caveats
 
 1. **Units differ.** Agent findings are itemized, one issue each. Human comments
    are conversational, though most raise a single issue.
@@ -557,3 +696,5 @@ nothing posts without reviewer approval.
 7. **The comparison covers reviewer-initiated reviews only.** Automated review on
    the pull request began after the window and contributed no findings to these
    figures.
+
+<!-- cspell:words MSRC -->
